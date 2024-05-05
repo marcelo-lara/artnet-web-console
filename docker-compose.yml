@@ -1,0 +1,9 @@
+version: '3'
+services:
+  web:
+    build: .
+    container_name: artnet-controller
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app

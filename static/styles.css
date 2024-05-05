@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+#fixture {
+    width: 33.33%;
+    margin: auto;
+}
+
+.fader-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.fader {
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 8px;
+    height: 200px;
+    padding: 0 5px;
+}
