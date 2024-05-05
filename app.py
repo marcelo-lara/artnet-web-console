@@ -2,14 +2,15 @@
 from flask import Flask, request, render_template
 import asyncio
 from pyartnet import ArtNetNode
-from fixture import Fixture, PARCAN_CHANNELS
+from libs.fixture import Fixture
+from libs.parCan import ParCan
 
 app = Flask(__name__)
 
 # Define Fixtures
 fixtures = [
-    Fixture(start_channel=16, name='ParCan Left', channel_names=PARCAN_CHANNELS),
-    Fixture(start_channel=22, name='ParCan Right', channel_names=PARCAN_CHANNELS),
+    ParCan(start_channel=16, name='ParCan Left'),
+    ParCan(start_channel=22, name='ParCan Right'),
 ]
 
 # Define Art-Net node IP

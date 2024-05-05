@@ -1,8 +1,5 @@
 from typing import Collection, Union
 
-PARCAN_CHANNELS = ['fader', 'red', 'green', 'blue', 'strobe', 'colors']
-
-
 class Channel:
     """
     Represents a channel of a fixture.
