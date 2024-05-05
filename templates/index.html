@@ -1,40 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Send ArtNet Values</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}" />
     <script src="{{ url_for('static', filename='main.js') }}"></script>
 </head>
+
 <body>
-    <div id="fixture">
-        <form id="artnetForm" class="fader-container">
-            <input type="hidden" id="fixture_name" name="fixture_name" value="ParCan Left"/>
-            <div>
-                <label for="fader">Fader</label><br>
-                <input type="range" id="fader" name="fader" min="0" max="255" value="0" class="fader"><br>
-            </div>
-            <div>
-                <label for="red">Red</label><br>
-                <input type="range" id="red" name="red" min="0" max="255" value="0" class="fader"><br>
-            </div>
-            <div>
-                <label for="green">Green</label><br>
-                <input type="range" id="green" name="green" min="0" max="255" value="0" class="fader"><br>
-            </div>
-            <div>
-                <label for="blue">Blue</label><br>
-                <input type="range" id="blue" name="blue" min="0" max="255" value="0" class="fader"><br>
-            </div>
-            <div>
-                <label for="strobe">Strobe</label><br>
-                <input type="range" id="strobe" name="strobe" min="0" max="255" value="0" class="fader"><br>
-            </div>
-            <div>
-                <label for="colors">Colors</label><br>
-                <input type="range" id="colors" name="colors" min="0" max="255" value="0" class="fader"><br>
-            </div>
-        </form>
-    </div>
+    <div id="console"></div>
 </body>
+
 </html>

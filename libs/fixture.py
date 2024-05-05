@@ -34,6 +34,9 @@ class Channel:
         self.current_value = value
         return self.current_value
 
+    def __str__(self) -> str:
+        return f"Channel|{self.name}: {self.number})"
+
 class Fixture:
     """
     Represents a fixture with multiple channels.
@@ -132,7 +135,7 @@ class Fixture:
         - values (dict): A dictionary with channel names as keys and channel values as values.
 
         Returns:
-        - a dictionary of channel number and their new values.
+        - a dictionary of channel number and their new values, ordered by channel number.
 
         Raises:
         - ValueError: If a channel with a given name is not found.
@@ -143,4 +146,15 @@ class Fixture:
                 channel.set_value(value)
             else:
                 raise ValueError(f"Channel {channel_name} not found")
-        return {channel.number: value for channel_name, value in values.items()}
+        ordered_values = {channel.number: channel.current_value for channel in self.channels}
+        return dict(sorted(ordered_values.items(), key=lambda x: x[0]))
+    
+    def to_dict(self):
+        sorted_channels = sorted(self.channels, key=lambda channel: channel.number)
+        print({channel.name: channel.current_value for channel in sorted_channels})
+        return {
+            'type': self.__class__.__name__,
+            'name': self.name,
+            'start_channel': self.start_channel,
+            'channels': {channel.name: channel.current_value for channel in sorted_channels}  
+        }    
