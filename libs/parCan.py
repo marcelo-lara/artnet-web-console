@@ -7,3 +7,5 @@ class ParCan(Fixture):
         super().__init__(start_channel, name, channel_names=PARCAN_CHANNELS)
 
     # Add any ParCan-specific methods here
+    def __str__(self) -> str:
+        return f"ParCan | {self.name} {self.get_values()}"
