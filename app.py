@@ -1,17 +1,9 @@
 
 from flask import Flask, request, render_template, jsonify
 import asyncio
-from pyartnet import ArtNetNode
+from libs.artNetNodeInstance import ArtNetNodeInstance
 from libs.fixture import Fixture
 from libs.parCan import ParCan
-
-class SingletonArtNetNode:
-    _instance = None
-
-    def __new__(cls, *args, **kwargs):
-        if not cls._instance:
-            cls._instance = ArtNetNode(*args, **kwargs)
-        return cls._instance
 
 app = Flask(__name__)
 
@@ -31,7 +23,7 @@ def setup():
     asyncio.run(setup_artnet_fixtures(fixtures))
 
 async def setup_artnet_fixtures(fixtures):
-    node = SingletonArtNetNode(ARTNET_NODE_IP, 6454)
+    node = ArtNetNodeInstance(ARTNET_NODE_IP, 6454)
     universe = node.add_universe(0)
     for fixture in fixtures:
         universe.add_channel(start=fixture.start_channel, width=len(fixture.get_values()), channel_name=fixture.id)
@@ -60,7 +52,6 @@ def send_artnet():
         return {"error": f"Fixture [{data.get('fixture_name')}] not found"}
     
     # get the channel values from the request and set the fixture values
-    old_values = fixture.get_values()
     channels = data.get('channels')
     for channel in channels:
         channel_name = channel.get('name')
@@ -71,17 +62,16 @@ def send_artnet():
 
     new_values = fixture.get_values()
 
-    asyncio.run(dispatch_artnet_packet(fixture, old_values, new_values))
+    asyncio.run(dispatch_artnet_packet(fixture, new_values))
 
     # return a json representation of the fixture values
     return fixture.get_values()
 
-async def dispatch_artnet_packet(fixture:Fixture, old_values, new_values):
+async def dispatch_artnet_packet(fixture:Fixture, new_values):
     
     # Create an ArtNet node
-    node = SingletonArtNetNode(ARTNET_NODE_IP, 6454, refresh_every=0.1, max_fps=30)
+    node = ArtNetNodeInstance(ARTNET_NODE_IP, 6454, refresh_every=0.1, max_fps=30)
     channel = node.get_universe(0).get_channel(fixture.id)
-    print(fixture.id, channel.get_values())
     channel.set_values(new_values)
     # channel.add_fade(new_values, 0.1)
     node.start_refresh()
