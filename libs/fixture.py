@@ -21,7 +21,8 @@ class Fixture:
         self.start_channel = start_channel  # Set starting channel number
         self.channels = [Channel(name, i) for i, name in enumerate(channel_names, start=start_channel)]
         self.name = name  # Set name
-        
+        self.id = self.name.lower().replace(' ', '_')
+
     def get_values(self)->Collection[Union[int, float]]:
         """
         Returns the current values of all fixture channels.

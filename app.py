@@ -5,6 +5,14 @@ from pyartnet import ArtNetNode
 from libs.fixture import Fixture
 from libs.parCan import ParCan
 
+class SingletonArtNetNode:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = ArtNetNode(*args, **kwargs)
+        return cls._instance
+
 app = Flask(__name__)
 
 # Define Fixtures
@@ -15,7 +23,19 @@ fixtures = [
 
 # Define Art-Net node IP
 ARTNET_NODE_IP = '192.168.1.221'
-FADE_TIME = 10
+FADE_TIME = 2
+
+@app.before_first_request
+def setup():
+    print("Setting up ArtNet fixtures")
+    asyncio.run(setup_artnet_fixtures(fixtures))
+
+async def setup_artnet_fixtures(fixtures):
+    node = SingletonArtNetNode(ARTNET_NODE_IP, 6454)
+    universe = node.add_universe(0)
+    for fixture in fixtures:
+        universe.add_channel(start=fixture.start_channel, width=len(fixture.get_values()), channel_name=fixture.id)
+    universe._resize_universe(512)
 
 def get_fixture(name:str) -> Fixture:
     global fixtures
@@ -59,17 +79,13 @@ def send_artnet():
 async def dispatch_artnet_packet(fixture:Fixture, old_values, new_values):
     
     # Create an ArtNet node
-    node = ArtNetNode(ARTNET_NODE_IP, 6454)
-    universe = node.add_universe(0)
-    channel = universe.add_channel(start=fixture.start_channel, width=len(new_values))
-    universe._resize_universe(512)
-
-    # dispatch Artnet packet
-    channel.set_values(old_values)
-    channel.add_fade(new_values, FADE_TIME)
+    node = SingletonArtNetNode(ARTNET_NODE_IP, 6454, refresh_every=0.1, max_fps=30)
+    channel = node.get_universe(0).get_channel(fixture.id)
+    print(fixture.id, channel.get_values())
+    channel.set_values(new_values)
+    # channel.add_fade(new_values, 0.1)
     node.start_refresh()
-    await channel
-    node.stop_refresh()
+    await asyncio.sleep(0.01)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True, port=5000)
