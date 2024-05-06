@@ -43,7 +43,7 @@ def get_fixture(name:str) -> Fixture:
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html', fixtures=fixtures)
 
 @app.route('/fixtures', methods=['GET'])
 def get_fixtures():

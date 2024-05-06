@@ -17,7 +17,7 @@ class Channel:
         self.name = name  # Set channel name
         self.number = number  # Set channel number in universe
         self.channel_width = channel_width  # Set channel width
-        self.current_value = 0  # Last value sent to the channel
+        self.value = 0  # Last value sent to the channel
 
     def set_value(self, value):
         """
@@ -29,8 +29,8 @@ class Channel:
         Returns:
         - new channel value
         """
-        self.current_value = value
-        return self.current_value
+        self.value = value
+        return self.value
 
     def __str__(self) -> str:
         return f"Channel|{self.name}: {self.number})"

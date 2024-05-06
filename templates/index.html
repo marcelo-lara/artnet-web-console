@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>Send ArtNet Values</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}" />
-    <script src="{{ url_for('static', filename='main.js') }}"></script>
-</head>
+  </head>
 
-<body>
-    <div id="console"></div>
-</body>
-
+  <body>
+    <div id="console">
+      {% for fixture in fixtures %}
+        {% include "fixture_basic.html" %}
+      {% endfor %}
+    </div>
+  </body>
 </html>

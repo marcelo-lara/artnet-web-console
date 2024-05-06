@@ -30,7 +30,7 @@ class Fixture:
         - None
 
         """
-        return [int(channel.current_value) for channel in self.channels]
+        return [int(channel.value) for channel in self.channels]
 
     def get_name(self):
         """
@@ -111,15 +111,15 @@ class Fixture:
                 channel.set_value(value)
             else:
                 raise ValueError(f"Channel {channel_name} not found")
-        ordered_values = {channel.number: channel.current_value for channel in self.channels}
+        ordered_values = {channel.number: channel.value for channel in self.channels}
         return dict(sorted(ordered_values.items(), key=lambda x: x[0]))
     
     def to_dict(self):
         sorted_channels = sorted(self.channels, key=lambda channel: channel.number)
-        print({channel.name: channel.current_value for channel in sorted_channels})
+        print({channel.name: channel.value for channel in sorted_channels})
         return {
             'type': self.__class__.__name__,
             'name': self.name,
             'start_channel': self.start_channel,
-            'channels': {channel.name: channel.current_value for channel in sorted_channels}  
+            'channels': {channel.name: channel.value for channel in sorted_channels}  
         }    
