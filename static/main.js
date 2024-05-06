@@ -1,60 +1,15 @@
-var fixtures = [];
-$(document).ready(function() {
-    $.get("/fixtures", function(data) {
-        fixtures = data;
-        $.each(fixtures, function(i, fixture) {
-            var fixtureDiv = $('<div class="fixture"></div>');
-            var fixtureNameDiv = $('<div class="fixture-name"></div>').text(fixture.name);
-            fixtureDiv.append(fixtureNameDiv);
+var socket = io.connect('http://localhost:5000');
 
-            $.each(fixture.channels, function(name, channel) {
-                var faderContainerDiv = $('<div class="fader-container"></div>');
-                var faderLabelDiv = $('<div class="fader-label"></div>').text(name);
-                var faderInput = $('<input type="range" class="fader" min="0" max="255" value="0">').attr('name', name);
-                faderInput.on('input', () => {
+// slider.onchange = function() {
+//     socket.emit('slider_change', {channel_id: 'myChannel', value: this.value});
+// };
 
-                    var data = {
-                        fixture_name: fixture.name,
-                        channels: []
-                        };
-                    $.each(fixture.channels, function(name, channel) {
-                        data.channels.push({
-                            name: name,
-                            value: $('[name=' + name + ']').val()
-                        });
-                    });
-                    $.ajax({
-                        url: "/send_artnet",
-                        type: "POST",
-                        data: JSON.stringify(data),
-                        contentType: "application/json",
-                        success: function(response) {
-                            console.log(response);
-                        }
-                    });
-                });
-                faderContainerDiv.append(faderLabelDiv, faderInput);
-                fixtureDiv.append(faderContainerDiv);
-            });
-
-            $('#console').append(fixtureDiv);
-        });
-
-    });});
-
-$(document).ready(function() {
-    $(".fader").on("input", function() {
-        var data = {
-            fixture_name: $("#fixture_name").val(),
-            fader: $("#fader").val(),
-            red: $("#red").val(),
-            green: $("#green").val(),
-            blue: $("#blue").val(),
-            strobe: $("#strobe").val(),
-            colors: $("#colors").val()
+(function() {
+    document.querySelectorAll('input.fader').forEach(function(x) {
+        x.onchange = function() {
+            console.log(x.value)
+            // socket.emit('button_click', {channel_id: 'myChannel', value: this.value});
         };
-        $.post("/send_artnet", data, function(response) {
-            
-        });
     });
-});
+
+})();
