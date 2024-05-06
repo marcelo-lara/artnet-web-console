@@ -1,3 +1,6 @@
+from typing import Collection, Union
+
+
 class Channel:
     """
     Represents a channel of a fixture.
@@ -19,6 +22,7 @@ class Channel:
         self.channel_width = channel_width  # Set channel width
         self.value = 0  # Last value sent to the channel
         self.id = f"ch{self.number}_{self.name}"
+        
         self.next_value = None # Next value to be sent to the channel
         self.next_fade_duration = None # Duration of the fade in milliseconds
 
@@ -35,6 +39,18 @@ class Channel:
         self.value = value
         return self.value
     
+    def get_value_as_bytes(self)->Collection[Union[int, float]]:
+        """
+        Returns the current value of the channel.
+
+        Parameters:
+        - None
+
+        Returns:
+        - int: The current value of the channel.
+        """
+        return [int(self.value)]
+    
     def complete_send(self):
         # Store last value sent
         self.value = self.next_value
@@ -45,4 +61,4 @@ class Channel:
         
 
     def __str__(self) -> str:
-        return f"Channel|{self.name}: {self.number})"
+        return f"Channel|{self.name}|dmx{self.number}|val{self.value}"

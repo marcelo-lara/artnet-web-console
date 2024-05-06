@@ -1,15 +1,8 @@
-var socket = io.connect('http://localhost:5000');
-
-// slider.onchange = function() {
-//     socket.emit('slider_change', {channel_id: 'myChannel', value: this.value});
-// };
-
+var socket = io.connect('http://s1.local:5000');
 (function() {
-    document.querySelectorAll('input.fader').forEach(function(x) {
-        x.onchange = function() {
-            console.log(x.value)
-            // socket.emit('button_click', {channel_id: 'myChannel', value: this.value});
-        };
+    document.querySelectorAll('input.slider').forEach(function(x) {
+        x.addEventListener('input', (e)=> {
+            socket.emit('slider_change', {channel_id: e.target.name, value: e.target.value});
+        });
     });
-
 })();

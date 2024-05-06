@@ -82,7 +82,7 @@ input[type="range"]{
     height: 200px;
 }
 
-.fader-container {
+.slider-container {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -90,12 +90,12 @@ input[type="range"]{
     margin: 0 5px;
 }
 
-.fader-label {
+.slider-label {
     width: 80px;
     padding: 0 5px;
     align-self: flex-end;
     text-align: end;
 }
-.fader {
+.slider {
     padding: 0 5px;
 }

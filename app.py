@@ -18,10 +18,13 @@ fixtures = [
 # Define Art-Net node IP
 ARTNET_NODE_IP = '192.168.1.221'
 FADE_TIME = 2
+
+# store the artnet channels
 artnet_channels = []
 def get_channel_by_id(channel_id)->Channel:
     return next(c for c in artnet_channels if c['name'] == channel_id)['instance']
 
+# setup artnet fixtures on startup
 @app.before_first_request
 def setup():
     print("Setting up ArtNet fixtures")
@@ -49,6 +52,11 @@ def get_fixture(name:str) -> Fixture:
 def index():
     return render_template('index.html', fixtures=fixtures)
 
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('.. Artnet refresh stopped')
+    ArtNetNodeInstance().stop_refresh()
+    
 @socketio.on('slider_change')
 def handle_slider_change(data):
     # Get the channel id and value
@@ -57,22 +65,21 @@ def handle_slider_change(data):
     
     # Get the channel instance
     channel = get_channel_by_id(channel_id)
-    print(channel, channel_value)
-    # channel.next_value = channel_value
-    # asyncio.run(dispatch_artnet_packet(channel))
+    channel.next_value = channel_value
+    asyncio.run(dispatch_artnet_packet(channel))
     
 async def dispatch_artnet_packet(channel:Channel):
 
     # Get the ArtNet node and channel
-    node = ArtNetNodeInstance(ARTNET_NODE_IP, 6454, refresh_every=0.1, max_fps=30)
+    node = ArtNetNodeInstance()
     node_channel = node.get_universe(0).get_channel(channel.id)
     
     # Set next values and fade
     if channel.next_fade_duration is not None:
-        node_channel.set_values(channel.value)
+        node_channel.set_values([channel.get_value_as_bytes()])
         node_channel.add_fade(channel.next_value, channel.next_fade_duration)
     else:
-        node_channel.set_values(channel.value)
+        node_channel.set_values(channel.get_value_as_bytes())
     channel.complete_send()
     
     # send and leave the node running

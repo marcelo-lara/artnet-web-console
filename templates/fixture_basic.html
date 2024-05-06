@@ -2,9 +2,9 @@
     <div class="fixture-name">{{ fixture.name }}</div>
 
     {% for channel in fixture.channels %}
-      <div class="fader-container">
-        <div class="fader-label">{{ channel.name }}</div>
-        <input type="range" class="fader" min="0" max="255" value="{{ channel.value or 0 }}" name="{{ channel.id }}" />
+      <div class="slider-container">
+        <div class="slider-label">{{ channel.name }}</div>
+        <input type="range" class="slider" min="0" max="255" value="{{ channel.value or 0 }}" name="{{ channel.id }}" />
       </div>
     {% endfor %}
 
