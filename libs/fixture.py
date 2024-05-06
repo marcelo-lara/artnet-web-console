@@ -122,4 +122,7 @@ class Fixture:
             'name': self.name,
             'start_channel': self.start_channel,
             'channels': {channel.name: channel.value for channel in sorted_channels}  
-        }    
+        }
+        
+    def fixture_type(self):
+        return self.__class__.__name__
