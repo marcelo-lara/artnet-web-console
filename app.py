@@ -1,5 +1,6 @@
 
 from flask import Flask, request, render_template, jsonify
+import os
 import asyncio
 from libs.artNetNodeInstance import ArtNetNodeInstance
 from libs.fixture import Fixture, Channel
@@ -16,7 +17,7 @@ fixtures = [
 ]
 
 # Define Art-Net node IP
-ARTNET_NODE_IP = '192.168.1.221'
+ARTNET_NODE_IP = os.getenv('ARTNET_NODE_IP', '192.168.1.221')
 FADE_TIME = 2
 
 # store the artnet channels
@@ -25,11 +26,6 @@ def get_channel_by_id(channel_id)->Channel:
     return next(c for c in artnet_channels if c['name'] == channel_id)['instance']
 
 # setup artnet fixtures on startup
-@app.before_first_request
-def setup():
-    print("Setting up ArtNet fixtures")
-    asyncio.run(setup_artnet_fixtures(fixtures))
-
 async def setup_artnet_fixtures(fixtures):
     node = ArtNetNodeInstance(ARTNET_NODE_IP, 6454)
     universe = node.add_universe(0)
@@ -43,6 +39,9 @@ async def setup_artnet_fixtures(fixtures):
             artnet_channels.append(_channel)
             
     universe._resize_universe(512)
+with app.app_context():
+    print("Setting up ArtNet fixtures")
+    asyncio.run(setup_artnet_fixtures(fixtures))
 
 def get_fixture(name:str) -> Fixture:
     global fixtures
@@ -87,4 +86,5 @@ async def dispatch_artnet_packet(channel:Channel):
     await asyncio.sleep(0.01)
 
 if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0", debug=True, port=5000)
+    DEBUG = os.getenv('DEBUG', 'True') == 'True'
+    socketio.run(app, host="0.0.0.0", debug=DEBUG, port=5000, allow_unsafe_werkzeug=True)
