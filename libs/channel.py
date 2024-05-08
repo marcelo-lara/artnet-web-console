@@ -25,6 +25,8 @@ class Channel:
         
         self.next_value = None # Next value to be sent to the channel
         self.next_fade_duration = None # Duration of the fade in milliseconds
+        
+        self._instance = None  # ArtNetNode instance of the channel
 
     def set_value(self, value):
         """
@@ -36,10 +38,30 @@ class Channel:
         Returns:
         - new channel value
         """
-        self.value = value
+        if self._instance is not None:
+            self._instance.set_values(self.get_value_as_bytes(value))
+            
+        self.complete_send()
         return self.value
     
-    def get_value_as_bytes(self)->Collection[Union[int, float]]:
+    def set_fade(self, target_value, time):
+        """
+        Sets the value of the channel with a fade duration.
+
+        Parameters:
+        - value (int): The value to set.
+        - time (int): The duration of the fade in milliseconds.
+
+        Returns:
+        - new channel value
+        """
+        if self._instance is not None:
+            self._instance.add_fade(self.get_value_as_bytes(target_value), time)
+            
+        self.complete_send()
+        return self.value
+    
+    def get_value_as_bytes(self, value=None)->Collection[Union[int, float]]:
         """
         Returns the current value of the channel.
 
@@ -49,7 +71,10 @@ class Channel:
         Returns:
         - int: The current value of the channel.
         """
-        return [int(self.value)]
+        if value is not None:
+            return [int(value)]
+        else:
+            return [int(self.value)]
     
     def complete_send(self):
         # Store last value sent
