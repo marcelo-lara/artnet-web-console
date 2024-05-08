@@ -124,5 +124,11 @@ class Fixture:
             'channels': {channel.name: channel.value for channel in sorted_channels}  
         }
         
-    def fixture_type(self):
-        return self.__class__.__name__
+    def personality(self):
+            """
+            Returns the Fixture Type (personality).
+
+            Returns:
+                str: The personality name of the fixture.
+            """
+            return self.__class__.__name__
