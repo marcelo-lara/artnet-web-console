@@ -1,4 +1,4 @@
-var socket = io.connect('http://s1.local:5000');
+var socket = io.connect(window.location.origin);
 (function() {
     document.querySelectorAll('input.slider').forEach(function(x) {
         x.addEventListener('input', (e)=> {
