@@ -57,7 +57,7 @@ input[type="range"]{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-start;
     /* height: 100vh; */    
 }
 
@@ -98,4 +98,48 @@ input[type="range"]{
 }
 .slider {
     padding: 0 5px;
+}
+
+/* song chaser blocks */
+
+#chaser {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 50vh;
+}
+
+#chaser-controls{
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  align-items: flex-end;
+}
+
+#chaser-controls button {
+  margin: 1px;
+  border: 0;
+  padding: 5px;
+  background-color: #b9b9b9;
+  width: 50px;
+  height: 50px;
+
+}
+
+#chaser-plan {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 1px;
+  max-width: 25vw;
+}
+
+.beat {
+  background-color: rgb(226, 226, 226);
+  aspect-ratio: 1 / 1;
+}
+
+.beat.active {
+  background-color: rgba(153, 0, 255, 0.226);
 }

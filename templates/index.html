@@ -12,6 +12,18 @@
         {% include "fixture_basic.html" %}
       {% endfor %}
     </div>
+    <div id="chaser">
+      <div id="chaser-controls">
+        <button id="chaser-start">Start</button>
+        <button id="chaser-stop">Stop</button>
+        <button id="chaser-reset">Reset</button>
+      </div>
+      <div id="chaser-plan">
+        {% for _ in range(64) %}
+            <div class="beat"></div>
+        {% endfor %}
+      </div>
+    </div>
     <script src="https://cdn.socket.io/4.2.0/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='main.js') }}"></script>
   </body>
