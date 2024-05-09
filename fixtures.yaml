@@ -1,0 +1,11 @@
+- type: Head
+  name: 'Head EL150'
+  start_channel: 1
+
+- type: ParCan
+  name: 'ParCan Left'
+  start_channel: 16
+
+- type: ParCan
+  name: 'ParCan Right'
+  start_channel: 22

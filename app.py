@@ -1,20 +1,18 @@
 
 from flask import Flask, render_template
+import yaml
 import os
 import asyncio
-from libs.artNetNodeInstance import ArtNetNodeInstance
-from libs.fixture import Channel
-from libs.parCan import ParCan
+from libs import ArtNetNodeInstance, Channel, create_fixture
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
 # Define Fixtures
-fixtures = [
-    ParCan(start_channel=16, name='ParCan Left'),
-    ParCan(start_channel=22, name='ParCan Right'),
-]
+with open('fixtures.yaml', 'r') as file:
+    fixtures_data = yaml.safe_load(file)
+fixtures = [create_fixture(data) for data in fixtures_data]
 
 # Define Art-Net defaults
 ARTNET_NODE_IP = os.getenv('ARTNET_NODE_IP', '192.168.1.221')
@@ -59,30 +57,30 @@ def get_channel_by_id(channel_id)->Channel:
 
 @socketio.on('slider_change')
 def handle_slider_change(data):
-    
+
     # Get the channel id and value
     channel_id = data['channel_id']
     channel_value = data['value']
-    
+
     # Get the channel instance
     channel = get_channel_by_id(channel_id)
     channel.next_value = channel_value
-    
+
     # Dispatch the ArtNet packet
     asyncio.run(dispatch_artnet_packet(channel))
 
-    
+
 async def dispatch_artnet_packet(channel:Channel):
 
     # Get the ArtNet node and channel
     node = ArtNetNodeInstance()
-    
+
     # Set next values and fade
     if channel.next_fade_duration is not None:
         channel.set_fade(channel.next_value, channel.next_fade_duration)
     else:
         channel.set_value(channel.next_value)
-    
+
     # send and leave the node running
     node.start_refresh()
     await asyncio.sleep(0.01)
