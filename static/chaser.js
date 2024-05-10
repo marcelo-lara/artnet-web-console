@@ -11,7 +11,6 @@ export default class Chaser {
     }
 
     start() {
-
         this.chase_timer = setInterval(() => this.movenext(), 60000 / this.bpm);
     }
 
@@ -33,6 +32,12 @@ export default class Chaser {
             clearInterval(this.chase_timer);
             this.start();
         }
+    }
+
+    stopAndSelectBeat(beat) {
+        clearInterval(this.chase_timer);
+        this.current = beat;
+        this.movenext();
     }
 
     movenext() {
