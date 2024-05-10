@@ -1,5 +1,9 @@
+html {
+  box-sizing: content-box;
+}
 body {
     font-family: Arial, sans-serif;
+    cursor: default;
 }
 
 input[type="range"][orient=vertical] {
@@ -117,14 +121,20 @@ input[type="range"]{
   align-items: flex-end;
 }
 
-#chaser-controls button {
+#chaser-controls .square {
   margin: 1px;
   border: 0;
   padding: 5px;
   background-color: #b9b9b9;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#chaser-controls button.square {
   width: 50px;
   height: 50px;
-
 }
 
 #chaser-plan {
