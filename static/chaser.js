@@ -2,51 +2,46 @@
 export default class Chaser {
     constructor({
         bpm, 
-        s_beat
+        s_beat,
+        socket
     }) {
         this.current = 0;
         this.s_beat = s_beat;
         this.bpm = bpm;
         this.chase_timer = null;
+        this.socket = socket;
+        
+        this.socket.on('update', (data) => {
+            // Handle the 'update' event here
+            this.current = data.current;
+            this.showBeat(this.current);
+        });
     }
 
+    //// Backend control functions
     start() {
-        this.chase_timer = setInterval(() => this.movenext(), 60000 / this.bpm);
+        this.socket.emit('chaser_start', { bpm: this.bpm, s_beat: this.s_beat });
     }
 
     stop() {
-        clearInterval(this.chase_timer);
+        this.socket.emit('chaser_stop');
     }
 
     reset() {
-        this.s_beat.forEach((x) => {
-            x.classList.remove('active');
-        });
-        this.current = 0;
+        this.socket.emit('chaser_reset');
     }
 
     // set the tempo in bpm
     setBpm(newBpm) {
         this.bpm = newBpm;
-        if (this.chase_timer) {
-            clearInterval(this.chase_timer);
-            this.start();
-        }
+        this.socket.emit('chaser_set_bpm', { bpm: this.bpm });
     }
 
-    stopAndSelectBeat(beat) {
-        clearInterval(this.chase_timer);
-        this.current = beat;
-        this.movenext();
-    }
-
-    movenext() {
-        // show next square beat
+    //// Frontend display functions
+    showBeat(beat) {
+        this.current = beat
         this.s_beat.forEach(x => x.classList.remove('active'));
-        this.s_beat[this.current].classList.add('active');
-
-        // set next square beat
-        this.current = (this.current + 1) % this.s_beat.length;
-        if (this.current > this.s_beat.length) { this.current = 0; };
+        this.s_beat[beat].classList.add('active');
     }
+
 }

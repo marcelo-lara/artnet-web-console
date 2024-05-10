@@ -3,8 +3,9 @@ from flask import Flask, render_template
 import yaml
 import os
 import asyncio
-from libs import ArtNetNodeInstance, Channel, create_fixture
+from libs import ArtNetNodeInstance, Channel, Chaser, create_fixture
 from flask_socketio import SocketIO
+
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -87,7 +88,32 @@ async def dispatch_artnet_packet(channel:Channel):
     node.start_refresh()
     await asyncio.sleep(0.01)
 
+## Chaser Handler
+chaser = None
+@socketio.on('connect')
+def handle_connect():
+    global chaser
+    chaser = Chaser(socketio, bpm=120, s_beat=artnet_channels)
 
+@socketio.on('chaser_start')
+def handle_start_chaser(data):
+    global chaser
+    if chaser is not None:
+        asyncio.run(chaser.start())
+
+
+@socketio.on('chaser_stop')
+def handle_stop_chaser(data=None):
+    global chaser
+    if chaser is not None:
+        asyncio.run(chaser.stop())
+
+@socketio.on('chaser_reset')
+def handle_reset_chaser(data=None):
+    global chaser
+    if chaser is not None:
+        asyncio.run(chaser.reset())
+        
 ## Main loop
 if __name__ == '__main__':
     DEBUG = os.getenv('DEBUG', 'True') == 'True'

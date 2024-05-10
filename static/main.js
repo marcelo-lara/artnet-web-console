@@ -10,7 +10,7 @@ var socket = io.connect(window.location.origin);
 
     // setup chaser blocks and controls
     const chaser_beats = document.querySelectorAll('#chaser-plan .beat')
-    const chaser = new Chaser( {bpm:100, s_beat:chaser_beats });
+    const chaser = new Chaser( {bpm:100, s_beat:chaser_beats, socket:socket});
 
     document.querySelector('#chaser-start').addEventListener('click', ()=> {
         chaser.start();
