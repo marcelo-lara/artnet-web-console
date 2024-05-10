@@ -1,4 +1,4 @@
-from libs.fixture import Fixture
+from libs.fixtures.fixture import Fixture
 PARCAN_CHANNELS = ['fader', 'red', 'green', 'blue', 'strobe', 'colors']
 
 

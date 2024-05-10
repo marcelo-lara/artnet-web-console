@@ -1,7 +1,7 @@
 from libs.artNetNodeInstance import ArtNetNodeInstance
-from libs.fixture import Channel
-from libs.parCan import ParCan
-from libs.head import Head
+from libs.fixtures.fixture import Channel
+from libs.fixtures.parCan import ParCan
+from libs.fixtures.head import Head
 
 fixture_types = {
     'Head': Head,

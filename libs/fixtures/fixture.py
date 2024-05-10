@@ -1,5 +1,5 @@
 from typing import Collection, Union
-from libs.channel import Channel
+from libs.fixtures.channel import Channel
 
 class Fixture:
     """
