@@ -2,5 +2,6 @@ flask
 flask_socketio
 numpy
 pyartnet
+PyYAML
 sounddevice
 aalink
