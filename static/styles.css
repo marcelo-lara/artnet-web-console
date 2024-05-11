@@ -154,7 +154,10 @@ input[type="range"]{
   aspect-ratio: 1 / 1;
   cursor: pointer;
 }
+.beat.has_scene{
+  background-color: rgba(255, 0, 0, 0.473);
 
+}
 .beat.active {
   background-color: rgba(153, 0, 255, 0.226);
 }

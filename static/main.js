@@ -12,7 +12,7 @@ var socket = io.connect(window.location.origin);
 
     // setup chaser blocks and controls
     const chaser_beats = document.querySelectorAll('#chaser-plan .beat')
-    const chaser = new Chaser( {bpm:100, s_beat:chaser_beats, socket:socket, channels:channels});
+    const chaser = new Chaser( {bpm:100, s_beat:chaser_beats, socket:socket, s_channels:channels});
 
     document.querySelector('#chaser-start').addEventListener('click', ()=> {
         chaser.start();
@@ -24,10 +24,10 @@ var socket = io.connect(window.location.origin);
         chaser.reset();
     });
     document.querySelector('#chaser-save').addEventListener('click', ()=> {
-        chaser.save_scene();
+        chaser.set_scene();
     });
     document.querySelector('#chaser-del').addEventListener('click', ()=> {
-        chaser.delete_scene();
+        chaser.clear_scene();
     });
 
 

@@ -4,29 +4,28 @@ export default class Chaser {
         bpm, 
         s_beat,
         socket,
-        channels
+        s_channels
     }) {
         this.current = 0;
         this.s_beat = s_beat;
         this.bpm = bpm;
         this.chase_timer = null;
         this.socket = socket;
-        this.scenes = [];
-        this.channels = channels;
-        
-        // Setup the initial sceme
-        let _channels = [];
-        channels.forEach(x => {
-            _channels.push({name: x.name, value: x.value});
-        });
-        this.scenes.push({beat: 0, channels: _channels});
+        this.channels = new Object();
 
+        for (const ch of s_channels) {
+            this.channels[ch.name] = ch;
+        }
+        
         // Setup event listeners
         this.s_beat.forEach((x, i) => {
             x.addEventListener('click', () => {
-                this.select_beat(i);
+                this.showBeat(i);
             });
         });
+
+        // Setup the initial sceme
+        this.s_beat[0]['channels'] = this._get_channels_status();
 
         // Handle server evemts
         this.socket.on('update', (data) => {
@@ -56,39 +55,40 @@ export default class Chaser {
 
     //// Frontend display functions
     showBeat(beat) {
+        // activate the current beat
         this.current = beat
         this.s_beat.forEach(x => x.classList.remove('active'));
         this.s_beat[beat].classList.add('active');
+
+        // update the sliders
+        if (this.s_beat[beat]['channels']) {
+            this.s_beat[beat]['channels'].forEach(x => {
+                this.channels[x.name].value = x.value;
+            });
+        };
+
     }
 
-    select_beat(beat) {
-        this.showBeat(beat)
-    }
-
-    save_scene() {
-        // find the channels that has changed from previous beat
-        const previousScene = this.scenes[this.scenes.length - 1];
-        
-        //FIXME: check if scene beat already exists 
-        const currentScene = { beat: this.current, channels: [] };
-
-        //FIXME: channel names are not stored properly
-        this.channels.forEach((channel, index) => {
-            if (previousScene.channels[index] && channel.value !== (previousScene.channels[index].value) ) {
-                currentScene.channels.push({ name: channel.name, value: channel.value });
-            }
+    //// Scene control functions
+    _get_channels_status() {
+        const _channels = [];
+        Object.entries(this.channels).forEach(x => {
+            _channels.push({name: x[0], value: x[1].value});
         });
-
-        // add/update the scenes array
-        this.scenes.push(currentScene);
-        console.log(this.scenes);
-
-        // send the updated scene to the server
-
+        return _channels;
     }
 
-    delete_scene() {   
+    set_scene() {
+        // retrieve scene object or create a new one
+        const new_channel_values = this._get_channels_status();
+        this.s_beat[this.current]['channels'] = new_channel_values;
+        this.s_beat[this.current].classList.add('has_scene');
+    }
+
+    clear_scene() {   
         // remove the current scene from the scenes array
+        this.s_beat[this.current]['channels'] = undefined;
+        this.s_beat[this.current].classList.remove('has_scene');
 
         // send the updated scene to the server
     }
