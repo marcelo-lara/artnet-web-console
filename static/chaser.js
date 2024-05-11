@@ -10,9 +10,17 @@ export default class Chaser {
         this.bpm = bpm;
         this.chase_timer = null;
         this.socket = socket;
+        this.scenes = [];
         
+        // Setup event listeners
+        this.s_beat.forEach((x, i) => {
+            x.addEventListener('click', () => {
+                this.select_beat(i);
+            });
+        });
+
+        // Handle server evemts
         this.socket.on('update', (data) => {
-            // Handle the 'update' event here
             this.current = data.current;
             this.showBeat(this.current);
         });
@@ -42,6 +50,10 @@ export default class Chaser {
         this.current = beat
         this.s_beat.forEach(x => x.classList.remove('active'));
         this.s_beat[beat].classList.add('active');
+    }
+
+    select_beat(beat) {
+        this.showBeat(beat)
     }
 
 }

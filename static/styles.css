@@ -148,6 +148,7 @@ input[type="range"]{
 .beat {
   background-color: rgb(226, 226, 226);
   aspect-ratio: 1 / 1;
+  cursor: pointer;
 }
 
 .beat.active {

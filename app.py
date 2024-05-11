@@ -88,8 +88,9 @@ async def dispatch_artnet_packet(channel:Channel):
     node.start_refresh()
     await asyncio.sleep(0.01)
 
-## Chaser Handler
+## Chaser Handler ##################################################################################
 chaser = None
+
 @socketio.on('connect')
 def handle_connect():
     global chaser
@@ -100,7 +101,6 @@ def handle_start_chaser(data):
     global chaser
     if chaser is not None:
         asyncio.run(chaser.start())
-
 
 @socketio.on('chaser_stop')
 def handle_stop_chaser(data=None):
