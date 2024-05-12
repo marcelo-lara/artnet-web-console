@@ -3,46 +3,34 @@ from flask import Flask, render_template
 import yaml
 import os
 import asyncio
-from libs import ArtNetNodeInstance, Channel, Chaser, create_fixture
+from libs import ArtNetNodeInstance, AbletonLink, Channel, Chaser
+from libs.fixtures import setup_artnet_fixtures, create_fixture
 from flask_socketio import SocketIO
-
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-## Ableton Link
+## Ableton Link ###############################################################################################################
+ableton_link = None
+async def setup_ableton_link():
+    print("Setting up AbletonLink")
+    loop = asyncio.get_running_loop()
+    ableton_link = AbletonLink(120, loop)
+    ableton_link.enabled = True
+    print(ableton_link.tempo)
+        
+with app.app_context():
+    asyncio.run(setup_ableton_link())
 
 # Define Fixtures
 with open('fixtures.yaml', 'r') as file:
     fixtures_data = yaml.safe_load(file)
 fixtures = [create_fixture(data) for data in fixtures_data]
 
-# Define Art-Net defaults
-ARTNET_NODE_IP = os.getenv('ARTNET_NODE_IP', '192.168.1.221')
-FADE_TIME = int(os.getenv('ARTNET_DEFAULT_FADETIME', '1'))
-
 ## setup artnet fixtures on startup
-# proxy store the artnet channels
 artnet_channels = []
-
-# load the fixtures into the artnet node
-async def setup_artnet_fixtures(fixtures):
-    node = ArtNetNodeInstance(ARTNET_NODE_IP, 6454)
-    universe = node.add_universe(0)
-    for fixture in fixtures:
-        for channel in fixture.channels:
-            channel._instance = universe.add_channel(start=channel.number, width=channel.channel_width, channel_name=channel.id)
-            _channel = {
-                'name': channel.id,
-                'instance': channel
-            }
-            artnet_channels.append(_channel)
-    universe._resize_universe(512)
-
-# run the fixture setup
 with app.app_context():
-    print("Setting up ArtNet fixtures")
-    asyncio.run(setup_artnet_fixtures(fixtures))
+    asyncio.run(setup_artnet_fixtures(fixtures, artnet_channels))
 
 ## Flask routes
 @app.route('/', methods=['GET'])

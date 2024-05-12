@@ -8,11 +8,13 @@ class Chaser:
         self.bpm = bpm
         self.task = None
         self.socketio = socketio
+        self.is_playing = False
 
     async def start(self):
         print('-> chaser start')
         if self.task is not None:
             self.task.cancel()
+        self.is_playing = True
         self.task = asyncio.create_task(self.movenext())
 
     async def stop(self):
@@ -20,6 +22,7 @@ class Chaser:
         if self.task is not None:
             self.task.cancel()
             self.task = None
+        self.is_playing = False
 
     async def reset(self):
         print('-> chaser reset')
@@ -31,10 +34,9 @@ class Chaser:
             asyncio.run(self.start())
 
     async def movenext(self):
-        while True:
-            print('-> chaser -> movenext')
-            
-            # Update the animation state here and send updates to the client
-            self.current = (self.current + 1) % len(self.s_beat)
-            self.socketio.emit('update', {'current': self.current})
-            await asyncio.sleep(60.0/self.bpm)
+        print('-> chaser -> movenext')
+        
+        # Update the animation state here and send updates to the client
+        self.current = (self.current + 1) % len(self.s_beat)
+        
+        self.socketio.emit('update', {'current': self.current})

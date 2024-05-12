@@ -4,7 +4,6 @@ from aalink import Link
 
 async def main():
     loop = asyncio.get_running_loop()
-
     link = Link(120, loop)
     link.enabled = True
     
