@@ -96,6 +96,15 @@ def handle_reset_chaser(data=None):
     global chaser
     if chaser is not None:
         asyncio.run(chaser.reset())
+
+@socketio.on('chaser_set_bpm')
+def handle_set_bpm(data=None):
+    newBpm = int(data['bpm'])
+    global chaser
+    if chaser is not None:
+        asyncio.run(chaser.setBpm(newBpm))
+
+
         
 ## Main loop
 if __name__ == '__main__':

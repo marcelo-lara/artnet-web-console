@@ -27,14 +27,14 @@ class Chaser:
         print('-> chaser reset')
         self.current = 0
 
-    def setBpm(self, newBpm):
+    async def setBpm(self, newBpm):
+        print('-> chaser setBpm', newBpm)
         self.bpm = newBpm
-        self.socketio.emit('set_bpm', {'bpm': self.bpm})
+        self.socketio.emit('update_bpm', {'bpm': self.bpm})
 
     async def movenext(self):
         print('-> chaser -> movenext')
         
         # Update the animation state here and send updates to the client
         self.current = (self.current + 1) % len(self.s_beat)
-        
         self.socketio.emit('update', {'current': self.current})

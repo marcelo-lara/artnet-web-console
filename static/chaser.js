@@ -27,11 +27,56 @@ export default class Chaser {
         // Setup the initial sceme
         this.s_beat[0]['channels'] = this._get_channels_status();
 
+        this.div_bpm = document.getElementById('bpm');
+
         // Handle server evemts
         this.socket.on('update', (data) => {
             this.current = data.current;
             this.showBeat(this.current);
         });
+
+        this.socket.on('update_bpm', (data) => {
+            this.bpm = data.bpm;
+            this.div_bpm.innerHTML = data.bpm;
+        });
+
+        //BPM setter
+        let isDragging = false;
+        let isOverBpmDiv = false;
+        let lastBpm = this.bpm;
+        let startY;
+
+        this.div_bpm.addEventListener('mousedown', (event) => {
+            isDragging = true;
+            startY = event.clientY;
+            event.preventDefault();
+        });
+
+        this.div_bpm.addEventListener('mouseenter', (event) => {
+            isOverBpmDiv = true;
+            event.preventDefault();
+        });
+
+        window.addEventListener('mousemove', (event) => {
+            if (isDragging && isOverBpmDiv) {
+                const deltaY = startY - event.clientY;
+                let newBpm = this.bpm += parseInt(deltaY * 0.5); // Adjust the multiplier as needed
+                if(newBpm != lastBpm){
+                    this.setBpm(newBpm);
+                    this.socket.emit('chaser_set_bpm', { bpm: this.bpm });
+                    lastBpm = newBpm;
+                }
+                startY = event.clientY;
+            }
+            event.preventDefault();
+        });
+
+        window.addEventListener('mouseup', (event) => {
+            isOverBpmDiv = false;
+            isDragging = false;
+        });
+
+
     }
 
     //// Backend control functions
@@ -50,7 +95,7 @@ export default class Chaser {
     // set the tempo in bpm
     setBpm(newBpm) {
         this.bpm = newBpm;
-        this.socket.emit('chaser_set_bpm', { bpm: this.bpm });
+        this.div_bpm.innerHTML = this.bpm.toFixed(0);
     }
 
     //// Frontend display functions
