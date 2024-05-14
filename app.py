@@ -3,26 +3,15 @@ from flask import Flask, render_template
 import yaml
 import os
 import asyncio
-from libs import ArtNetNodeInstance, AbletonLink, Channel, Chaser
+from libs import ArtNetNodeInstance, Channel, Chaser
 from libs.fixtures import setup_artnet_fixtures, create_fixture
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-## Ableton Link ###############################################################################################################
-ableton_link = None
-async def setup_ableton_link():
-    print("Setting up AbletonLink")
-    loop = asyncio.get_running_loop()
-    ableton_link = AbletonLink(120, loop)
-    ableton_link.enabled = True
-    print(ableton_link.tempo)
-        
-with app.app_context():
-    asyncio.run(setup_ableton_link())
 
-# Define Fixtures
+## Define Fixtures
 with open('fixtures.yaml', 'r') as file:
     fixtures_data = yaml.safe_load(file)
 fixtures = [create_fixture(data) for data in fixtures_data]
@@ -78,7 +67,12 @@ async def dispatch_artnet_packet(channel:Channel):
 
 ## Chaser Handler ##################################################################################
 chaser = None
-
+async def _chaser_movenext():
+    global chaser
+    while chaser.is_playing:
+        await chaser.movenext()
+        await asyncio.sleep(60 / chaser.bpm)
+              
 @socketio.on('connect')
 def handle_connect():
     global chaser
@@ -89,6 +83,7 @@ def handle_start_chaser(data):
     global chaser
     if chaser is not None:
         asyncio.run(chaser.start())
+        asyncio.run(_chaser_movenext())
 
 @socketio.on('chaser_stop')
 def handle_stop_chaser(data=None):

@@ -15,7 +15,6 @@ class Chaser:
         if self.task is not None:
             self.task.cancel()
         self.is_playing = True
-        self.task = asyncio.create_task(self.movenext())
 
     async def stop(self):
         print('-> chaser stop')
@@ -30,8 +29,7 @@ class Chaser:
 
     def setBpm(self, newBpm):
         self.bpm = newBpm
-        if self.task is not None:
-            asyncio.run(self.start())
+        self.socketio.emit('set_bpm', {'bpm': self.bpm})
 
     async def movenext(self):
         print('-> chaser -> movenext')
