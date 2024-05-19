@@ -4,7 +4,7 @@ export default class Chaser {
         bpm, 
         s_beat,
         socket,
-        s_channels
+        s_channels,
     }) {
         this.current = 0;
         this.s_beat = s_beat;
@@ -67,8 +67,8 @@ export default class Chaser {
                     lastBpm = newBpm;
                 }
                 startY = event.clientY;
+                event.preventDefault();
             }
-            event.preventDefault();
         });
 
         window.addEventListener('mouseup', (event) => {
@@ -128,6 +128,7 @@ export default class Chaser {
         const new_channel_values = this._get_channels_status();
         this.s_beat[this.current]['channels'] = new_channel_values;
         this.s_beat[this.current].classList.add('has_scene');
+        console.log(this.dump_all_scenes());
     }
 
     clear_scene() {   
@@ -136,5 +137,17 @@ export default class Chaser {
         this.s_beat[this.current].classList.remove('has_scene');
 
         // send the updated scene to the server
+    }
+
+    dump_all_scenes() {
+        const allScenes = [];
+        this.s_beat.forEach((beat, index) => {
+            const scene = {
+                beat: index,
+                channels: beat['channels']
+            };
+            allScenes.push(scene);
+        });
+        return allScenes;
     }
 }
