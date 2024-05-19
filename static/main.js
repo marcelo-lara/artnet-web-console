@@ -35,5 +35,29 @@ var socket = io.connect(window.location.origin);
     });
 
 
-
 })();
+
+/// setup midi input /////////////////////////////////////////////////
+if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess({ sysex: true })
+        .then(onMIDISuccess, onMIDIFailure);
+} else {
+    console.log("WebMIDI is not supported in this browser.");
+}
+
+function onMIDISuccess(midiAccess) {
+    console.log('MIDI Access Object', midiAccess);
+    var inputs = midiAccess.inputs;
+    var outputs = midiAccess.outputs;
+    for (var input of inputs.values()) {
+        input.onmidimessage = getMIDIMessage;
+    }
+}
+
+function onMIDIFailure() {
+    console.log('Could not access your MIDI devices.');
+}
+
+function getMIDIMessage(midiMessage) {
+    console.log(midiMessage);
+}    
