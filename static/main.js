@@ -1,4 +1,5 @@
 import Chaser from './chaser.js';
+import Metronome from './metronome.js';
 
 var socket = io.connect(window.location.origin);
 (function() {
@@ -9,6 +10,9 @@ var socket = io.connect(window.location.origin);
         //     socket.emit('slider_change', {channel_id: e.target.name, value: e.target.value});
         // });
     });
+
+    // setup metronome
+    const metronome = new Metronome({socket:socket});
 
     // setup chaser blocks and controls
     const chaser_beats = document.querySelectorAll('#chaser-plan .beat')
