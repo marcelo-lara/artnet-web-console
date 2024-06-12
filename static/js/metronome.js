@@ -3,7 +3,7 @@ export default class Metronome {
         this.audioContext = undefined;
         this.buffer = undefined;
         this.isPlaying = false;
-        this.audioFile = '/static/Perc_HeadKnock_lo.wav';
+        this.audioFile = '/static/assets/Perc_HeadKnock_lo.wav';
         this.socket = socket;
 
         // bind socket events
