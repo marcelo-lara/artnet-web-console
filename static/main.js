@@ -15,22 +15,22 @@ var socket = io.connect(window.location.origin);
     const metronome = new Metronome({socket:socket});
 
     // setup chaser blocks and controls
-    const chaser_beats = document.querySelectorAll('#chaser-plan .beat')
+    const chaser_beats = document.querySelectorAll('#song .beat')
     const chaser = new Chaser( {bpm:120, s_beat:chaser_beats, socket:socket, s_channels:channels});
 
-    document.querySelector('#chaser-start').addEventListener('click', ()=> {
+    document.querySelector('#start').addEventListener('click', ()=> {
         chaser.start();
     });
-    document.querySelector('#chaser-stop').addEventListener('click', ()=> {
+    document.querySelector('#stop').addEventListener('click', ()=> {
         chaser.stop();
     });
-    document.querySelector('#chaser-reset').addEventListener('click', ()=> {
+    document.querySelector('#reset').addEventListener('click', ()=> {
         chaser.reset();
     });
-    document.querySelector('#chaser-save').addEventListener('click', ()=> {
+    document.querySelector('#save').addEventListener('click', ()=> {
         chaser.set_scene();
     });
-    document.querySelector('#chaser-del').addEventListener('click', ()=> {
+    document.querySelector('#del').addEventListener('click', ()=> {
         chaser.clear_scene();
     });
 

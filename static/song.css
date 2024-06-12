@@ -1,0 +1,27 @@
+#song {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+#song .beat {
+    display: flex;
+    flex: 100px 50px auto;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: #ccc;
+    padding: 5px;
+    margin: 2px;
+    width: 100px;
+    height: 50px;
+}
+
+#song .has_scene {
+    background-color: rgb(241, 201, 253);
+}
+
+#song .beat.active {
+    background-color: rgb(153, 0, 255);
+}

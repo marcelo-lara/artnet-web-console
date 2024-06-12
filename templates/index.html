@@ -4,34 +4,37 @@
     <title>Send ArtNet Values</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dmxConsole.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='player.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='song.css') }}" />
   </head>
 
   <body>
-    <div id="console">
+    <div id="dmxConsole">
       {% for fixture in fixtures %}
         {% include "fixture_basic.html" %}
       {% endfor %}
     </div>
-    <div id="chaser">
-      <div id="chaser-controls">
-        <div class="top">
-          <div id="bpm" class="square bpm">120</div>
-          <button id="chaser-start" class="square">Start</button>
-          <button id="chaser-stop" class="square">Stop</button>
-          <button id="chaser-reset" class="square">Reset</button>
-        </div>
-        <div class="bottom">
-          <button id="chaser-save" class="square">Save</button>
-          <button id="chaser-del" class="square">Del</button>
-        </div>
-      </div>
 
-      <div id="chaser-plan">
-        {% for _ in range(64) %}
-            <div class="beat"></div>
-        {% endfor %}
-      </div>
+    <div id="player">
+        <div class="left">
+          <div id="bpm" class="square bpm">120</div>
+          <button id="start" class="square">Start</button>
+          <button id="stop" class="square">Stop</button>
+          <button id="reset" class="square">Reset</button>
+        </div>
+        <div class="right">
+          <button id="save" class="square">Save</button>
+          <button id="del" class="square">Del</button>
+        </div>
     </div>
+
+    <div id="song">
+      {% for i in range(64) %}
+          <div class="beat square">{{i}}</div>
+      {% endfor %}
+    </div>
+
     <script src="https://cdn.socket.io/4.2.0/socket.io.min.js"></script>
     <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
   </body>

@@ -1,0 +1,18 @@
+#player {
+  display: flex;
+  justify-content: space-between;
+  height: 100px;
+
+}
+
+#player>div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+}
+
+#player .square {
+  font-size: 16px;
+}
