@@ -3,7 +3,7 @@ from flask import Flask, render_template
 import yaml
 import os
 import asyncio
-from libs import ArtNetNodeInstance, Channel, Chaser
+from libs import ArtNetNodeInstance, Channel, Chaser, Song, Beat
 from libs.fixtures import setup_artnet_fixtures, create_fixture
 from flask_socketio import SocketIO
 
@@ -21,10 +21,15 @@ artnet_channels = []
 with app.app_context():
     asyncio.run(setup_artnet_fixtures(fixtures, artnet_channels))
 
+## Read the song data from songbooks folder into a Song object
+song = Song()
+song.load_from_file('static/songbook/obsession.json')
+
+
 ## Flask routes
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html', fixtures=fixtures)
+    return render_template('index.html', fixtures=fixtures, song=song)
 
 ## SocketIO events
 @socketio.on('disconnect')

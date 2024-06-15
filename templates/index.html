@@ -30,8 +30,8 @@
     </div>
 
     <div id="song">
-      {% for i in range(64) %}
-          <div class="beat square">{{i}}</div>
+      {% for beat in song.beats %}
+        {% include "song_beat.html" %}
       {% endfor %}
     </div>
 
